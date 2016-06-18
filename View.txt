@@ -1,0 +1,159 @@
+---------Item_supplier--------
+
+select ITEM_NAME, SUP_NAME ,PHONE,SUP_ADDRESS
+from store_item natural join supplier 
+
+-- where store_item.SUP_ID = supplier.SUP_ID;
+
+
+--------- History ---------
+
+select ORDER_DATE ,
+ CUST_FNAME ||' '||CUST_LNAME as "Customer Name" ,
+EMP_FNAME  ||' '||EMP_LNAME  as "Employee Name" ,
+ITEM_NAME,ITEM_QUANTITY,ITEM_PRICE,
+ITEM_PRICE*ITEM_QUANTITY TotalPrice
+
+from orders,customer,employee,store_item,selled_item
+
+where orders.CUST_ID = customer.CUST_ID and 
+            orders.EMP_ID = employee.EMP_ID and
+            orders.ORDER_ID = selled_item.ORDER_ID and
+            selled_item.ITEM_ID= store_item.ITEM_ID
+order by ORDER_DATE
+
+
+
+
+
+
+
+
+
+
+
+-- Function -----
+CREATE OR REPLACE
+FUNCTION checkMydate(
+          checkDate IN VARCHAR2)
+     RETURN VARCHAR2
+IS
+     v_result VARCHAR2(3);
+     v_date   DATE;
+BEGIN
+
+
+     v_date   := to_date(checkDate,'dd-mm-yy');
+     V_RESULT := 'YES';
+     RETURN V_RESULT;
+
+
+EXCEPTION WHEN OTHERS THEN
+     V_RESULT := 'NO';
+     RETURN v_result;
+END;
+
+
+-- Procedure 
+
+create or replace procedure income (
+Odate in nvarchar2  )
+--history .ORDER_DATE%type
+is 
+x number(5);
+d varchar2(3);
+-- User Define Exeption
+invaledDate EXCEPTION;
+DateNotInDB EXCEPTION;
+begin
+   d := checkMydate(Odate);
+   if (d ='NO') then  RAISE invaledDate; 
+end if;
+select  sum(TOTALPRICE) into x
+from history where ORDER_DATE=Odate ;
+if x>0 then
+dbms_output.put_line('The Income in '|| Odate || ' Is ' ||x);
+else
+ RAISE DateNotInDB ; 
+end if;
+EXCEPTION 
+When no_data_found then 
+Dbms_output.put_line('No date fount');
+when DateNotInDB then
+dbms_output.put_line('There is no dataFount in '|| Odate );
+when invaledDate then
+dbms_output.put_line('You Must Enter A Valid Date ');
+When others then 
+Dbms_output.put_line('Error');
+end;
+
+
+
+
+--- Secure Triggers 
+/* --- JOb --- */
+CREATE OR REPLACE TRIGGER secure_job
+BEFORE DELETE OR INSERT OR UPDATE ON job BEGIN
+ IF (TO_CHAR(SYSDATE,'DY') IN ('FRI')) THEN
+  RAISE_APPLICATION_ERROR(-20500, 'The System is Off in Friday ');
+  END IF;
+END;
+
+/* --- employee--- */
+CREATE OR REPLACE TRIGGER secure_employee 
+BEFORE DELETE OR INSERT OR UPDATE ON employee BEGIN
+ IF (TO_CHAR(SYSDATE,'DY') IN ('FRI')) THEN
+  RAISE_APPLICATION_ERROR(-20500, 'The System is Off in Friday ');
+  END IF;
+END;
+
+/* --- secure_customer ---- */ 
+CREATE OR REPLACE TRIGGER secure_customer 
+BEFORE DELETE OR INSERT OR UPDATE ON customer BEGIN
+ IF (TO_CHAR(SYSDATE,'DY') IN ('FRI')) THEN
+  RAISE_APPLICATION_ERROR(-20500, 'The System is Off in Friday ');
+  END IF;
+END;
+/* --- secure_orders---- */ 
+CREATE OR REPLACE TRIGGER secure_orders
+BEFORE DELETE OR INSERT OR UPDATE ON orders BEGIN
+ IF (TO_CHAR(SYSDATE,'DY') IN ('FRI')) THEN
+  RAISE_APPLICATION_ERROR(-20500, 'The System is Off in Friday ');
+  END IF;
+END;
+/* --- secure_supplier---- */ 
+CREATE OR REPLACE TRIGGER secure_supplier
+BEFORE DELETE OR INSERT OR UPDATE ON supplier BEGIN
+ IF (TO_CHAR(SYSDATE,'DY') IN ('FRI')) THEN
+  RAISE_APPLICATION_ERROR(-20500, 'The System is Off in Friday ');
+  END IF;
+END;
+
+/* --- secure_store_item---- */ 
+CREATE OR REPLACE TRIGGER secure_store_item
+BEFORE DELETE OR INSERT OR UPDATE ON store_item BEGIN
+ IF (TO_CHAR(SYSDATE,'DY') IN ('FRI')) THEN
+  RAISE_APPLICATION_ERROR(-20500, 'The System is Off in Friday ');
+  END IF;
+END;
+
+
+/* --- secure_selled_item---- */ 
+CREATE OR REPLACE TRIGGER secure_selled_item
+BEFORE DELETE OR INSERT OR UPDATE ON selled_item BEGIN
+ IF (TO_CHAR(SYSDATE,'DY') IN ('FRI')) THEN
+  RAISE_APPLICATION_ERROR(-20500, 'The System is Off in Friday ');
+  END IF;
+END;
+
+
+
+
+
+
+
+
+
+
+
+

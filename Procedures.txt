@@ -1,0 +1,212 @@
+/* ------------------ Supplier -------------------- */
+--Delete
+create or replace PROCEDURE delete_supplier (P1 in supplier.SUP_ID%type)
+as 
+begin 
+delete from supplier
+where SUP_ID=P1;
+commit ;
+end; 
+
+
+-- Update 
+
+
+create or replace procedure update_supplier(
+c_id in supplier.SUP_ID%type,
+c_name in supplier.SUP_NAME%type ,
+c_PHONE in supplier.PHONE%type  , 
+c_ADDRESS in supplier.SUP_ADDRESS%type  ,
+c_E_MAIL in supplier.E_MAIL%type
+)
+is
+begin
+	update supplier
+	set SUP_NAME=c_name,
+        PHONE= c_PHONE,
+	SUP_ADDRESS=c_ADDRESS,
+        E_MAIL=c_E_MAIL
+	where 
+	SUP_ID= c_id;
+		commit;
+end;
+
+/* ------------------ Customer (mabrouk ) -------------------- */
+-- update
+create or replace procedure up_cust(id in customer.cust_id%type , fname in customer.cust_fname%type ,lname in customer.cust_lname%type , adderss in customer.cust_adderss%type , 
+phone in customer.cust_phone%type , mail in customer.e_mail%type  )
+is
+begin 
+update customer
+set   cust_fname=fname,  
+    cust_lname= lname,
+    cust_adderss= adderss, 
+    cust_phone= phone,
+    e_mail= mail  
+where cust_id=id;
+commit;
+end;
+
+
+/* ------------ store_item ----------- */
+-- delete 
+create or replace PROCEDURE delete_store_item (P1 in store_item.ITEM_ID%type)
+as 
+begin 
+delete from store_item
+where ITEM_ID=P1;
+commit ;
+end; 
+
+-- Update
+-- Update
+create or replace procedure update_supplier(
+p1 in store_item.ITEM_ID%type,
+p2 in store_item.ITEM_NAME%type ,
+p3 in store_item.ITEM_PRICE%type  , 
+p4 in store_item.AVAILABLE_AMOUNT%type  ,
+p5 in store_item.ITEM_DESCRIPTION%type,
+p6 in store_item.SUP_ID%type
+)
+is
+begin
+update store_item
+set
+ITEM_NAME=p2 ,
+ITEM_PRICE=p3 ,
+AVAILABLE_AMOUNT=p4 ,
+ITEM_DESCRIPTION=p5 ,
+SUP_ID=p6 
+where 
+ITEM_ID= p1;
+commit;
+end;
+
+/* ----------------- selled Item ( shawara )  ------------ */ 
+
+create or replace procedure updatequantity(it in selled_item.item_id%type,
+ord in selled_item.order_id%type,itq in selled_item.item_quantity%type)
+is
+begin
+update selled_item set item_quantity=itq
+where order_id=ord and item_id=it;
+commit;
+end;
+
+
+/* ----------- Function ------------- */
+
+select * from users;
+
+create or replace function FN (
+p1 in users.USER_ID%type,
+p2 in users.PASS%type
+) return number
+is 
+c1 users.USER_ID%type;
+x number;
+begin
+select USER_ID into c1 from users
+where PASS =p2;
+
+if  c1=p1 then
+return 1;
+else
+return 0;
+end if;
+
+
+end;
+
+
+/* ---------- Customer ---------- */ 
+
+-- Update
+-- update
+create or replace procedure up_cust(
+p1 in customer.CUST_ID%type,
+p2 in customer.CUST_FNAME%type ,
+p3 in customer.CUST_LNAME%type  , 
+p4 in customer.PHONE%type  ,
+p5 in customer.CUST_ADDRESS%type,
+p6 in customer.E_MAIL%type
+)
+is
+begin
+update customer
+set
+CUST_FNAME=p2 ,
+CUST_LNAME=p3 ,
+PHONE=p4 ,
+CUST_ADDRESS=p5 ,
+E_MAIL=p6 
+where 
+CUST_ID= p1;
+commit;
+end;
+
+
+
+
+
+/* ------------- Employee--------------- */
+
+create or replace procedure up_emp(
+p1 in employee.EMP_ID%type,
+p2 in employee.EMP_FNAME%type ,
+p3 in employee.EMP_LNAME%type  , 
+p4 in employee.EMP_DATE%type  ,
+p5 in employee.PHONE%type,
+p6 in employee.JOB_ID%type
+)
+is
+begin
+update employee
+set
+EMP_FNAME=p2 ,
+EMP_LNAME=p3 ,
+EMP_DATE=p4 ,
+PHONE=p5 ,
+JOB_ID=p6 
+where 
+EMP_ID= p1;
+commit;
+end;
+
+
+/*----------------- JOB ------------------*/
+--delete 
+create or replace PROCEDURE delete_supplier (P1 in supplier.SUP_ID%type)
+as 
+begin 
+delete from supplier
+where SUP_ID=P1;
+commit ;
+end; 
+
+
+
+
+
+-- update
+select * from job;
+
+create or replace procedure up_jop(
+p1 in job.JOB_ID%type,
+p2 in job.JOB_NAME%type ,
+p3 in job.SALARY%type  , 
+p4 in job.BOUNS%type  
+)
+is
+begin
+update job
+set
+JOB_NAME=p2 ,
+SALARY=p3 ,
+BOUNS=p4 
+where 
+JOB_ID= p1;
+commit;
+end;
+
+
